@@ -1,0 +1,18 @@
+const http = require("http");
+
+const server = http.createServer(function (req, res) {
+  console.log("I got an incoming request");
+
+  // db operstions, and all 
+
+  res.writeHead(200);
+  res.end('Thanks for coming');
+});
+
+// creates and returns an instance of an HTTP server. takes in callback function , it gives acccess to req and res
+// 'req' = Incoming request object (client’s data, URL, headers),contain method get,put and what user is trying to req
+// 'res' = Response object used to send data back to the client
+
+server.listen(8000, function () {
+  console.log(`HTTP Server is Up and Running on port 8000`);
+});
