@@ -1,0 +1,56 @@
+const { BOOKS } = require("../models/books");
+
+//actual logic to do things 
+exports.getAllBooks = function(req,res){
+  res.json(BOOKS);
+}
+exports.getBookById = function(req, res){
+  const id = parseInt(req.params.id); //id is in url if varibale name = op /books/:op and req.params.op , this is in strong do parseInt to convert in number for using ===
+
+  if (isNaN(id))
+    return res.status(400).json({ error: "Bad Request id must be number" });
+
+  const book = BOOKS.find((e) => e.id == id);
+
+  if (!book) {
+    return res.status(404).json({ error: `Book with id ${id} does not exist` });
+  }
+  res.json(book);
+}
+exports.createBook = function(req, res){
+  console.log(req.headers); // .. 'content-type': 'application/json', or text what you send
+  //backend dont know how to read this different type of data
+
+  const { title, author } = req.body;
+
+  if (!title || title === "")
+    return res.status(400).json({ error: "title is required" });
+
+  if (!author || author === "")
+    return res.status(400).json({ error: "author is required" });
+
+  const id = BOOKS.length + 1;
+  const book = { id, title, author };
+  BOOKS.push(book);
+
+  console.log(req.body); //o/p is undefined even though body me bheja   //add middleware
+
+  return res
+    .status(201)
+    .json({ message: "Book created succesfully with id ", id });
+}
+exports.deleteBookById = function(req, res) {
+  const id = parseInt(req.params.id);
+  if (isNaN(id))
+    return res.status(400).json({ error: "Bad Request id must be number" });
+
+  const indexToDel = BOOKS.findIndex((e) => e.id === id);
+
+  if (indexToDel < 0) {
+    return res
+      .status(404)
+      .json({ error: `book with id ${id} does not exist ` });
+  }
+  BOOKS.splice(indexToDel, 1); //start,delCOunt
+  return res.status(200).json(`Book Deleted`);
+}
